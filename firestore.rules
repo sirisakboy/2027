@@ -1,0 +1,76 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default-deny global safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function isNonEmptyString(val, maxLen) {
+      return val is string && val.size() > 0 && val.size() <= maxLen;
+    }
+
+    function isValidTuningLog(data) {
+      return data.keys().hasAll(['id', 'creator', 'fileName', 'modelPn', 'details', 'createdAt'])
+        && data.keys().hasOnly(['id', 'creator', 'fileName', 'modelPn', 'details', 'createdAt'])
+        && isNonEmptyString(data.id, 64)
+        && data.id.matches('^[a-zA-Z0-9_\\-]+$')
+        && isNonEmptyString(data.creator, 64)
+        && isNonEmptyString(data.fileName, 256)
+        && isNonEmptyString(data.modelPn, 64)
+        && isNonEmptyString(data.details, 1024)
+        && isNonEmptyString(data.createdAt, 64);
+    }
+
+    function isValidEcuValidation(data) {
+      return data.keys().hasAll(['ecuId', 'model', 'recommendedBin', 'startOffset', 'checksumOffset', 'validatedAt'])
+        && data.keys().hasOnly(['ecuId', 'model', 'recommendedBin', 'startOffset', 'checksumOffset', 'validatedAt'])
+        && isNonEmptyString(data.ecuId, 64)
+        && isNonEmptyString(data.model, 128)
+        && isNonEmptyString(data.recommendedBin, 256)
+        && isNonEmptyString(data.startOffset, 32)
+        && isNonEmptyString(data.checksumOffset, 32)
+        && isNonEmptyString(data.validatedAt, 64);
+    }
+
+    function isValidEcuPartNumber(data) {
+      return data.keys().hasAll(['pn', 'model', 'vendor', 'createdAt'])
+        && data.keys().hasOnly(['pn', 'model', 'vendor', 'flashKB', 'createdAt'])
+        && isNonEmptyString(data.pn, 64)
+        && isNonEmptyString(data.model, 128)
+        && data.vendor in ['KEIHIN', 'SHINDENGEN']
+        && (!('flashKB' in data) || (data.flashKB is number && data.flashKB >= 16 && data.flashKB <= 1024))
+        && isNonEmptyString(data.createdAt, 64);
+    }
+
+    // Central DB collections (append-only, schema-validated without Google Login per creator requirement)
+    match /tuning_logs/{logId} {
+      allow list: if true;
+      allow get: if isValidId(logId);
+      allow create: if isValidId(logId) && isValidTuningLog(incoming());
+      allow update, delete: if false;
+    }
+
+    match /ecu_validations/{validationId} {
+      allow list: if true;
+      allow get: if isValidId(validationId);
+      allow create: if isValidId(validationId) && isValidEcuValidation(incoming());
+      allow update, delete: if false;
+    }
+
+    match /ecu_part_numbers/{ecuId} {
+      allow list: if true;
+      allow get: if isValidId(ecuId);
+      allow create: if isValidId(ecuId) && isValidEcuPartNumber(incoming());
+      allow update, delete: if false;
+    }
+  }
+}

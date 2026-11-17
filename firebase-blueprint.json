@@ -1,0 +1,156 @@
+{
+  "entities": {
+    "TuningLog": {
+      "title": "TuningLog",
+      "description": "Log of ECU tuning and flashing sessions stored in central creator DB",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique log ID",
+          "maxLength": 64,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "creator": {
+          "type": "string",
+          "maxLength": 64,
+          "description": "Creator DB identifier"
+        },
+        "fileName": {
+          "type": "string",
+          "maxLength": 256,
+          "description": "Name of the BIN file"
+        },
+        "modelPn": {
+          "type": "string",
+          "maxLength": 64,
+          "description": "ECU Part Number"
+        },
+        "details": {
+          "type": "string",
+          "maxLength": 1024,
+          "description": "Tuning summary details"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 64,
+          "description": "ISO timestamp of session"
+        }
+      },
+      "required": [
+        "id",
+        "creator",
+        "fileName",
+        "modelPn",
+        "details",
+        "createdAt"
+      ]
+    },
+    "EcuValidation": {
+      "title": "EcuValidation",
+      "description": "ECU ID validation and auto-matched profile lookup history",
+      "type": "object",
+      "properties": {
+        "ecuId": {
+          "type": "string",
+          "maxLength": 64,
+          "description": "Validated ECU Part Number"
+        },
+        "model": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "Matched motorcycle model name"
+        },
+        "recommendedBin": {
+          "type": "string",
+          "maxLength": 256,
+          "description": "Recommended stock BIN filename"
+        },
+        "startOffset": {
+          "type": "string",
+          "maxLength": 32,
+          "description": "Memory start offset hex string"
+        },
+        "checksumOffset": {
+          "type": "string",
+          "maxLength": 32,
+          "description": "Checksum offset hex string"
+        },
+        "validatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 64,
+          "description": "ISO timestamp of validation"
+        }
+      },
+      "required": [
+        "ecuId",
+        "model",
+        "recommendedBin",
+        "startOffset",
+        "checksumOffset",
+        "validatedAt"
+      ]
+    },
+    "EcuPartNumber": {
+      "title": "EcuPartNumber",
+      "description": "Custom ECU Part Number entries added to central DB",
+      "type": "object",
+      "properties": {
+        "pn": {
+          "type": "string",
+          "maxLength": 64,
+          "description": "ECU Part Number"
+        },
+        "model": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "Vehicle model and notes"
+        },
+        "vendor": {
+          "type": "string",
+          "enum": ["KEIHIN", "SHINDENGEN"],
+          "maxLength": 32,
+          "description": "ECU vendor"
+        },
+        "flashKB": {
+          "type": "number",
+          "description": "Flash memory size in KB"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 64,
+          "description": "ISO timestamp of creation"
+        }
+      },
+      "required": [
+        "pn",
+        "model",
+        "vendor",
+        "createdAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/tuning_logs/{logId}": {
+      "schema": {
+        "$ref": "#/entities/TuningLog"
+      },
+      "description": "Central collection of ECU tuning & flash logs"
+    },
+    "/ecu_validations/{validationId}": {
+      "schema": {
+        "$ref": "#/entities/EcuValidation"
+      },
+      "description": "Central collection of ECU ID format and ROM profile validations"
+    },
+    "/ecu_part_numbers/{ecuId}": {
+      "schema": {
+        "$ref": "#/entities/EcuPartNumber"
+      },
+      "description": "Central registry of user-added ECU part numbers"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+:root{
+  --bg:#02060c;
+  --blue-1:#00d4ff;
+  --blue-2:#0090ff;
+  --cyan-glow:0 0 12px rgba(0,212,255,.8),0 0 24px rgba(0,144,255,.5), inset 0 0 12px rgba(0,212,255,.2);
+  --cyan-glow-strong:0 0 18px rgba(0,212,255,1),0 0 36px rgba(0,144,255,.8), inset 0 0 18px rgba(0,212,255,.35);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background: radial-gradient(1200px 600px at 50% -20%, #0a2340 0%, #02060c 60%, #000 100%);
+  font-family:'Kanit','Sarabun',system-ui,sans-serif;
+  color:#e6f4ff;
+  overflow:hidden;
+}

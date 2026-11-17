@@ -1,0 +1,39 @@
+# GitLab CI/CD Configuration for REMAP V.5
+# Simple build verification on GitLab.com shared runners
+
+stages:
+  - build
+  - test
+
+# Build Job - Frontend build verification
+build:
+  stage: build
+  image: node:20
+  script:
+    - echo "Building REMAP V.5 Frontend..."
+    - node --version
+    - npm --version
+    - npm ci
+    - npx tsc --noEmit
+    - npm run build
+    - echo "Frontend build completed successfully!"
+    - ls -la dist/
+  artifacts:
+    name: "remap-v5-${CI_COMMIT_SHORT_SHA}"
+    paths:
+      - dist/
+    expire_in: 30 days
+  only:
+    - main
+    - tags
+
+# Test Job - fast typecheck on merge requests
+test:
+  stage: test
+  image: node:20
+  script:
+    - npm ci
+    - npx tsc --noEmit
+  only:
+    - merge_requests
+    - main

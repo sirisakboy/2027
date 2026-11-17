@@ -1,0 +1,12 @@
+{
+  "projectId": "ecu-tune-ai",
+  "appId": "1:130450996944:web:0fa8417d7f023aae77a8d5",
+  "apiKey": "AIzaSyAE2PLCuqgOe1uauowdUwUiaFEXo6tNZu4",
+  "authDomain": "ecu-tune-ai.firebaseapp.com",
+  "firestoreDatabaseId": "ai-studio-remapv5-d2d6403d-1ae9-4177-9e7e-eadb7aa2b593",
+  "storageBucket": "ecu-tune-ai.firebasestorage.app",
+  "messagingSenderId": "130450996944",
+  "measurementId": "",
+  "oAuthClientId": "130450996944-irocaakm477feku803eni9mu9m5ppgn8.apps.googleusercontent.com",
+  "recaptchaSiteKey": ""
+}

@@ -1,0 +1,38 @@
+[package]
+name = "remap-v5"
+version = "5.0.7"
+description = "REMAP V.5 - Honda Motorbike ECU Remapping"
+authors = ["sirisakboy"]
+license = "MIT"
+repository = "https://github.com/sirisakboy/remap-v5"
+edition = "2021"
+rust-version = "1.77.2"
+# src/bin/ holds library modules, not binaries - don't auto-build them as bins
+autobins = false
+
+[[bin]]
+name = "remap-v5"
+path = "src/main.rs"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tauri = { version = "2.11", features = [] }
+tauri-plugin-shell = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-fs = "2"
+serialport = "4.4.0"
+tokio = { version = "1.35", features = ["full"] }
+tokio-serial = "5.4.4"
+hex = "0.4.3"
+crc = "3.0.1"
+
+[features]
+default = [ "custom-protocol" ]
+custom-protocol = [ "tauri/custom-protocol" ]
+# Direct FTDI access via libftdi1 (needs libftdi1-dev to build).
+# Example: cargo build --features ftdi
+ftdi = []
