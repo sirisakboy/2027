@@ -80,6 +80,17 @@ npx vite --port 1420 --host 0.0.0.0
 
 ---
 
-**สรุป:** Day 1 สำเร็จ 100% ตามเป้า 30 นาที - โปรแกรมรันได้ มีปุ่มกดได้ทุกปุ่ม มี state ครบ พร้อมต่อยอดเป็นของจริง!
+## Day 2 - Flutter Cross-Platform Edition ✅
+
+**วันที่:** 18 พ.ย. 2026
+**สถานะ:** สำเร็จ - พัฒนาแอป Flutter สำหรับ Linux/Desktop/Mobile ครบถ้วน!
+
+### ทำอะไรไปบ้าง:
+- [x] สร้างโครงสร้างสถาปัตยกรรม Flutter `flutter_app/` (Models, Services, State Providers, Widgets)
+- [x] จัดทำ UI Panels ทั้งหมด: TopBanner, LeftPanel, RightPanel, DashboardPanel, TunePanel, DtcPanel
+- [x] เพิ่ม state management ด้วย Provider (`EcuState`) รองรับการเชื่อมต่อ ECU, อ่าน ROM, แฟลชรอม, คำนวณ CC, และจัดการ DTC
+- [x] เพิ่ม Unit/Widget Test (`widget_test.dart`) และทดสอบผ่าน 100%
+
+---
 
 **Commit:** `dd6fa38` - Day 1 - 30min exercise

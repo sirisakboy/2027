@@ -1,33 +1,29 @@
 # REMAP V.5 - Cross-Platform Edition
 
-> โปรแกรมจูนกล่องมอเตอร์ไซค์ Honda แบบ Build ได้ทุกแพลตฟอร์ม
-> **Status:** Day 1 - 30 min exercise ✅ - 35% Complete - รันได้แล้วที่ port 1420
+> โปรแกรมจูนกล่องมอเตอร์ไซค์ Honda แบบ Build ได้ทุกแพลตฟอร์ม (Svelte Web + Tauri + Flutter Mobile/Desktop)
+> **Status:** Day 2 - Flutter App Complete ✅ - 50% Complete
 
-## 📊 สถานะปัจจุบัน (อัพเดท 20 ก.ย. 2026)
+## 📊 สถานะปัจจุบัน (อัพเดท 18 พ.ย. 2026)
 
 | ส่วน | สถานะ | รายละเอียด |
 |------|--------|------------|
-| **Frontend UI** | ✅ 100% | Svelte + Vite, pixel-perfect เหมือนต้นฉบับ, responsive |
-| **Components** | ✅ 100% | TopBanner, LeftPanel, RightPanel, CenterPanel, StatusBar |
+| **Frontend UI (Svelte)** | ✅ 100% | Svelte + Vite, pixel-perfect เหมือนต้นฉบับ, responsive |
+| **Flutter App** | ✅ 100% | Flutter Linux/Desktop/Mobile client ครบทุกหน้า (Dashboard, Tune, DTC, Top/Left/Right panels) |
 | **COM Port** | ✅ 100% | Selector dropdown, COM75/COM3/ttyUSB0, connect/disconnect mock |
 | **BIN Handling** | ✅ 100% | Read 64KB mock, checksum, save file, file dialog |
 | **Flash** | ✅ 100% | Progress 0-100% animation, ห้ามปิดกุญแจ warning |
-| **21 ปุ่ม** | ✅ 100% | ทุกปุ่มกดได้ + Toast notification |
+| **21 ปุ่ม** | ✅ 100% | ทุกปุ่มกดได้ + Notification / Log |
 | **Rust Backend** | 🟡 60% | โครง 7 commands เสร็จ, รอ implement K-Line จริง |
-| **Build Pipeline** | 🟡 60% | build.yml พร้อม, รอทดสอบ build จริงบน GitHub |
+| **Build Pipeline** | 🟡 60% | build.yml พร้อม |
 | **Hardware** | ⏳ 0% | รอกล่อง ECU ทดสอบ |
-| **รวม** | **35%** | **Day 1 เสร็จตามเป้า 30 นาที** |
+| **รวม** | **50%** | **Day 1 & Day 2 สำเร็จตามเป้า** |
 
-### ✅ ทำเสร็จแล้ว Day 1 (20 ก.ย. 2026)
-- [x] Web UI pixel-perfect (index.html ต้นฉบับ)
-- [x] ย้ายไป Svelte + Vite + TypeScript
-- [x] สร้าง Tauri scaffold (Cargo.toml, tauri.conf.json)
-- [x] ทำ serial auto-detect mock
-- [x] ทำ BIN reader/writer mock
-- [x] ทำ flash progress bar
-- [x] ทำ COM selector + connect logic
-- [x] ทำ GitHub Actions build.yml
-- [x] รัน dev server ได้ที่ port 1420
+### ✅ ทำเสร็จแล้ว (Day 1 & Day 2)
+- [x] Web UI Svelte + Vite + TypeScript (port 1420)
+- [x] Flutter Cross-Platform App (`flutter_app/`) พร้อม Provider state management และ Unit/Widget tests ผ่าน 100%
+- [x] Tauri scaffold (Cargo.toml, tauri.conf.json)
+- [x] Serial auto-detect mock, BIN reader/writer, Flash progress bar
+- [x] GitHub Actions build.yml
 
 ### 🟡 โครงเสร็จ รอทำจริง
 - [~] Rust commands (list_ports, connect_ecu, read_rom, write_rom)
