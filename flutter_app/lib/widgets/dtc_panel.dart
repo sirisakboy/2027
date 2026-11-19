@@ -72,7 +72,7 @@ class _DtcPanelState extends State<DtcPanel> {
                     )
                   : ListView.separated(
                       itemCount: dtcList.length,
-                      separatorBuilder: (_, __) => const Divider(color: Color(0xFF1a3a5a), height: 1),
+                      separatorBuilder: (_, _) => const Divider(color: Color(0xFF1a3a5a), height: 1),
                       itemBuilder: (context, index) {
                         final dtc = dtcList[index];
                         return ListTile(

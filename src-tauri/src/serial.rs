@@ -4,8 +4,8 @@ use std::io::Read;
 use std::io::Write;
 use crate::ecu::transport::EcuTransport;
 
-/// Mock mode for development without physical hardware
-pub const MOCK_MODE: bool = true;
+/// Production mode with real hardware connection
+pub const MOCK_MODE: bool = false;
 
 pub struct EcuConnection {
     port: Option<Box<dyn SerialPort>>,

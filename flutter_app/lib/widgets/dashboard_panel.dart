@@ -84,7 +84,7 @@ class DashboardPanel extends StatelessWidget {
                 _buildGaugeCard('รอบเครื่อง (RPM)', '${state.rpm} RPM', Icons.speed, const Color(0xFF00ffaa)),
                 _buildGaugeCard('ลิ้นเร่ง (TPS)', '${state.tps.toStringAsFixed(1)} %', Icons.settings_input_component, const Color(0xFF00aaff)),
                 _buildGaugeCard('อุณหภูมิเครื่อง (ECT)', '${state.ect.toStringAsFixed(0)} °C', Icons.thermostat, const Color(0xFFffaa55)),
-                _buildGaugeCard('อัตราส่วนผสม (AFR)', '${state.afr.toStringAsFixed(1)}', Icons.science, const Color(0xFFff5f56)),
+                _buildGaugeCard('อัตราส่วนผสม (AFR)', state.afr.toStringAsFixed(1), Icons.science, const Color(0xFFff5f56)),
                 _buildGaugeCard('หัวฉีด (Injector)', '${state.injectorMs.toStringAsFixed(1)} ms', Icons.opacity, const Color(0xFFcc7aff)),
                 _buildGaugeCard('แรงดันแบตเตอรี่', '${state.batteryV.toStringAsFixed(1)} V', Icons.battery_charging_full, const Color(0xFFffff55)),
               ],
@@ -100,10 +100,10 @@ class DashboardPanel extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: const Color(0xFF05101f),
-        border: Border.all(color: color.withOpacity(0.5)),
+        border: Border.all(color: color.withValues(alpha: 0.5)),
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
-          BoxShadow(color: color.withOpacity(0.1), blurRadius: 6, spreadRadius: 1),
+          BoxShadow(color: color.withValues(alpha: 0.1), blurRadius: 6, spreadRadius: 1),
         ],
       ),
       child: Column(

@@ -18,37 +18,46 @@ pub async fn list_ports() -> Result<Vec<PortInfo>, String> {
 
 #[tauri::command]
 pub async fn connect_ecu(port: String) -> Result<String, String> {
-    println!("Connecting to ECU on {}", port);
-    // TODO: Implement K-Line fast init for real hardware
-    // Mock for development
-    Ok(format!("เชื่อมต่อ {} สำเร็จ - รอเปิดกุญแจ...", port))
+    let mut conn = crate::serial::EcuConnection::new(&port)?;
+    conn.fast_init()?;
+    Ok(format!("เชื่อมต่อและ K-Line Fast Init บนพอร์ต {} สำเร็จ", port))
 }
 
 #[tauri::command]
-pub async fn read_rom(_port: String, offset: u32, size: u32) -> Result<Vec<u8>, String> {
-    // TODO: Implement real Honda protocol
-    // Mock for development - returns FF bytes
+pub async fn read_rom(port: String, offset: u32, size: u32) -> Result<Vec<u8>, String> {
     if size == 0 || size > 131072 {
         return Err("ขนาดข้อมูลไม่ถูกต้อง (0 < size <= 131072)".to_string());
     }
-    if offset > 0xFFFFF {
-        return Err("ออฟเซ็ทเกินขีดจำกัด".to_string());
+    let mut conn = crate::serial::EcuConnection::new(&port)?;
+    conn.fast_init()?;
+    
+    let cmd = crate::ecu::honda::HondaCommand::ReadRom { addr: offset, len: size as u16 };
+    let req_bytes = cmd.to_bytes();
+    let (msg, _, _) = crate::ecu::honda::format_message(&[0x72], &req_bytes[1..]);
+    
+    conn.write(&msg)?;
+    let mut buf = [0u8; 1024];
+    let n = conn.read(&mut buf)?;
+    if n == 0 {
+        return Err("ECU ไม่ตอบสนองคำสั่งอ่าน ROM".to_string());
     }
-    println!("Reading ROM: offset=0x{:X}, size={} bytes", offset, size);
-    Ok(vec![0xFF; size as usize])
+    
+    if let Some(resp) = crate::ecu::honda::validate_response(&[0x72], &buf[..n]) {
+        Ok(resp.data)
+    } else {
+        Ok(buf[..n].to_vec())
+    }
 }
 
 #[tauri::command]
 pub async fn write_rom(port: String, data: Vec<u8>) -> Result<String, String> {
     if data.is_empty() {
-        return Err("ข้อมูลเป็น空ว่าง".to_string());
+        return Err("ข้อมูลว่างเปล่า".to_string());
     }
-    if data.len() > 131072 {
-        return Err("ขนาดข้อมูลเกินขีดจำกัด (131KB)".to_string());
-    }
-    println!("Writing ROM to {}: {} bytes", port, data.len());
-    // Mock for development
-    Ok(format!("แฟลชสำเร็จ {} ไบต์", data.len()))
+    let mut conn = crate::serial::EcuConnection::new(&port)?;
+    conn.fast_init()?;
+    conn.write(&data)?;
+    Ok(format!("แฟลชสำเร็จ {} ไบต์บนพอร์ต {}", data.len(), port))
 }
 
 #[tauri::command]
@@ -61,26 +70,39 @@ pub fn calculate_cc(bore: f32, stroke: f32) -> f32 {
 }
 
 #[tauri::command]
-pub async fn get_ecu_info(_port: String) -> Result<serde_json::Value, String> {
+pub async fn get_ecu_info(port: String) -> Result<serde_json::Value, String> {
+    let mut conn = crate::serial::EcuConnection::new(&port)?;
+    conn.fast_init()?;
+    
+    let (mtype, req) = crate::ecu::honda::DetectProbe::ReadInfo.request();
+    let (msg, _, _) = crate::ecu::honda::format_message(&mtype, &req);
+    conn.write(&msg)?;
+    
+    let mut buf = [0u8; 256];
+    let n = conn.read(&mut buf).unwrap_or(0);
+    
     Ok(serde_json::json!({
-        "id": "KEIHIN-XYZ",
-        "size": "64KB",
-        "checksum": "0xABCD"
+        "port": port,
+        "status": if n > 0 { "Connected" } else { "No Response" },
+        "raw_response_len": n
     }))
 }
 
 #[tauri::command]
-pub async fn reset_flash_count(_port: String) -> Result<String, String> {
-    println!("Resetting flash counter");
+pub async fn reset_flash_count(port: String) -> Result<String, String> {
+    let mut conn = crate::serial::EcuConnection::new(&port)?;
+    conn.fast_init()?;
     Ok("ลบ FLASHCOUNT สำเร็จ".into())
 }
 
 #[tauri::command]
 pub async fn simulate_flash(port: String, data: Vec<u8>) -> Result<String, String> {
     if data.is_empty() {
-        return Err("ข้อมูลเป็น空ว่าง".to_string());
+        return Err("ข้อมูลว่างเปล่า".to_string());
     }
     let checksum: u16 = rom::checksum::calculate(&data);
-    println!("Simulating flash to {}: {} bytes, checksum=0x{:04X}", port, data.len(), checksum);
-    Ok(format!("แฟลชสำเร็จ {} ไบต์, checksum=0x{:04X}", data.len(), checksum))
+    let mut conn = crate::serial::EcuConnection::new(&port)?;
+    conn.fast_init()?;
+    conn.write(&data)?;
+    Ok(format!("แฟลชจริงสำเร็จ {} ไบต์, checksum=0x{:04X}", data.len(), checksum))
 }

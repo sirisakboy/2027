@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import '../models/ecu_model.dart';
 import '../services/ecu_service.dart';
@@ -62,11 +61,11 @@ class EcuState extends ChangeNotifier {
   Future<void> connectEcu() async {
     isConnecting = true;
     notifyListeners();
-    setLog('🔌 กำลังเชื่อมต่อ ${comPort} (K-Line 10400 Baud)...');
+    setLog('🔌 กำลังเชื่อมต่อ $comPort (K-Line 10400 Baud)...');
     await Future.delayed(const Duration(milliseconds: 900));
     isConnecting = false;
     isConnected = true;
-    setLog('✅ เชื่อมต่อ ${comPort} สำเร็จ! ECU พร้อมทำงาน');
+    setLog('✅ เชื่อมต่อ $comPort สำเร็จ! ECU พร้อมทำงาน');
     notifyListeners();
   }
 

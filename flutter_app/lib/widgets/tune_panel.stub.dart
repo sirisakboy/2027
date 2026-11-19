@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../providers/ecu_state.dart';
 
 class TunePanel extends StatefulWidget {
   const TunePanel({super.key});
@@ -18,7 +16,7 @@ class _TunePanelState extends State<TunePanel> {
   bool popBangs = false;
 
   @override
-  Widget build(Context) {
+  Widget build(BuildContext context) {
     return const Placeholder();
   }
 }
